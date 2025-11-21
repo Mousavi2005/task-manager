@@ -10,9 +10,19 @@ export const getAllTasks = query({
 export const createTask = mutation({
     args: { taskName: v.string() },
     handler: async (ctx, args) => {
-        return await ctx.db.insert('tasks', {
+        await ctx.db.insert('tasks', {
             taskName: args.taskName,
             isCompleted: false
+        })
+    }
+})
+
+export const toggleCompleteTask = mutation({
+    args: { taskId: v.id('tasks') },
+    handler: async (ctx, args) => {
+        const task = await ctx.db.get(args.taskId)
+        await ctx.db.patch(args.taskId, {
+            isCompleted: !task.isCompleted
         })
     }
 })
